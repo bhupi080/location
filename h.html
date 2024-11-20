@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Request</title>
+</head>
+<body>
+    <div id="location">Waiting for location...</div>
+
+    <script>
+        // Automatically request the user's location when the page loads
+        window.onload = () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        // Get the latitude and longitude in decimal format
+                        const latitude = parseFloat(position.coords.latitude);
+                        const longitude = parseFloat(position.coords.longitude);
+
+                        // Check if the coordinates are valid
+                        if (latitude === 0 && longitude === 0) {
+                            document.getElementById('location').innerHTML = 'Invalid location data received.';
+                        } else {
+                            // Display the location on the page with correct decimal precision
+                            document.getElementById('location').innerHTML = 
+                                `Latitude: ${latitude.toFixed(6)}, Longitude: ${longitude.toFixed(6)}`;
+                        }
+                    },
+                    (error) => {
+                        // Handle error cases
+                        let errorMessage = 'Unknown error occurred.';
+                        if (error.code === 1) {
+                            errorMessage = 'Permission denied. Please allow location access.';
+                        } else if (error.code === 2) {
+                            errorMessage = 'Position unavailable. Please try again later.';
+                        } else if (error.code === 3) {
+                            errorMessage = 'Request timeout. Please try again.';
+                        }
+                        document.getElementById('location').innerHTML = `Error: ${errorMessage}`;
+                    }
+                );
+            } else {
+                document.getElementById('location').innerHTML = 'Geolocation is not supported by this browser.';
+            }
+        };
+    </script>
+</body>
+</html>
